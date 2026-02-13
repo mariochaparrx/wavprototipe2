@@ -1,0 +1,1585 @@
+<!-- wav-prototipo.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>WAV — Prototipo</title>
+  <style>
+    :root{
+      --bg:#f3f4f6;
+      --panel:#ffffff;
+      --text:#121417;
+      --muted:#6b7280;
+      --line:#e6e8ee;
+      --shadow: 0 14px 40px rgba(16,24,40,.12);
+      --primary:#1A5F4C;
+      --primary-2:#E8F5F0;
+      --accent:#D4AF37;
+      --danger:#b91c1c;
+      --radius:18px;
+      --radius2:14px;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 15% 20%, rgba(26,95,76,.10), transparent 55%),
+        radial-gradient(900px 600px at 85% 25%, rgba(212,175,55,.10), transparent 60%),
+        var(--bg);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px 14px;
+    }
+
+    .stage{
+      width:min(980px, 100%);
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:18px;
+      align-items:start;
+      justify-items:center;
+    }
+
+    .phone-wrap{
+      width: min(430px, 100%);
+    }
+
+    .phone{
+      width:100%;
+      background:var(--panel);
+      border:1px solid rgba(17,24,39,.08);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .status{
+      height: 16px;
+      background: linear-gradient(to bottom, rgba(0,0,0,.05), transparent);
+    }
+
+    .header{
+      position:sticky;
+      top:0;
+      z-index:10;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-inner{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 12px 14px;
+      gap: 10px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+
+    .logo{
+      width:34px;height:34px;
+      border-radius: 12px;
+      background: radial-gradient(18px 18px at 30% 30%, rgba(255,255,255,.65), transparent 55%),
+                  linear-gradient(135deg, var(--primary), #0f3c31);
+      box-shadow: 0 8px 18px rgba(26,95,76,.18);
+      border: 1px solid rgba(0,0,0,.06);
+      position:relative;
+    }
+    .logo:after{
+      content:"";
+      position:absolute; inset:9px 10px 10px 9px;
+      border-radius: 9px;
+      border: 1px solid rgba(212,175,55,.55);
+      opacity:.9;
+    }
+
+    .brand-title{
+      display:flex;
+      flex-direction:column;
+      line-height:1.1;
+      min-width:0;
+    }
+    .brand-title strong{
+      font-size: 13px;
+      letter-spacing:.18em;
+      text-transform: uppercase;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .brand-title span{
+      font-size: 12px;
+      color: var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .hdr-actions{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      flex-shrink:0;
+    }
+
+    .iconbtn{
+      appearance:none;
+      border:1px solid rgba(17,24,39,.10);
+      background:#fff;
+      padding:10px 10px;
+      border-radius: 14px;
+      cursor:pointer;
+      box-shadow: 0 8px 18px rgba(16,24,40,.06);
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 42px;
+      min-height: 42px;
+      user-select:none;
+    }
+    .iconbtn:hover{ transform: translateY(-1px); box-shadow: 0 12px 22px rgba(16,24,40,.08); border-color: rgba(26,95,76,.25);}
+    .iconbtn:active{ transform: translateY(0px); box-shadow: 0 8px 18px rgba(16,24,40,.06); }
+
+    .icon{
+      width:18px;height:18px;
+      display:block;
+      stroke: currentColor;
+    }
+
+    .content{
+      padding: 14px;
+      padding-bottom: 92px;
+      min-height: 640px;
+      background: linear-gradient(to bottom, rgba(232,245,240,.25), transparent 140px);
+    }
+
+    .footerbar{
+      position:absolute;
+      left:0; right:0; bottom:0;
+      padding: 10px 14px 14px;
+      background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,.75));
+      border-top: 1px solid var(--line);
+      display:flex;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+    }
+
+    .footnote{
+      font-size: 11.5px;
+      color: var(--muted);
+      line-height:1.25;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(17,24,39,.10);
+      background:#fff;
+      font-size: 12px;
+      color: var(--muted);
+      user-select:none;
+    }
+
+    .h1{
+      font-size: 20px;
+      margin: 2px 0 10px;
+      letter-spacing: -.02em;
+    }
+    .h2{
+      font-size: 14px;
+      margin: 18px 0 10px;
+      color: #111827;
+      letter-spacing: -.01em;
+    }
+    .p{
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height:1.5;
+    }
+
+    .hero{
+      padding: 14px;
+      border-radius: var(--radius);
+      background:
+        radial-gradient(400px 240px at 20% 10%, rgba(26,95,76,.14), transparent 60%),
+        radial-gradient(340px 220px at 80% 35%, rgba(212,175,55,.16), transparent 60%),
+        #fff;
+      border: 1px solid rgba(17,24,39,.08);
+      box-shadow: 0 12px 30px rgba(16,24,40,.06);
+      margin-bottom: 12px;
+    }
+    .hero .h1{ margin: 4px 0 6px; }
+    .hero .p{ margin-bottom: 10px; }
+    .hero-cta{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      appearance:none;
+      border:none;
+      cursor:pointer;
+      padding: 12px 12px;
+      border-radius: 14px;
+      font-weight: 650;
+      font-size: 13px;
+      letter-spacing: -.01em;
+      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+      user-select:none;
+    }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{
+      background: linear-gradient(135deg, var(--primary), #0f3c31);
+      color:#fff;
+      box-shadow: 0 14px 28px rgba(26,95,76,.22);
+    }
+    .btn-ghost{
+      background:#fff;
+      color: var(--primary);
+      border: 1px solid rgba(26,95,76,.24);
+      box-shadow: 0 10px 18px rgba(16,24,40,.06);
+    }
+    .btn-soft{
+      background: var(--primary-2);
+      color: var(--primary);
+      border: 1px solid rgba(26,95,76,.18);
+    }
+    .btn-danger{
+      background: rgba(185,28,28,.10);
+      color: var(--danger);
+      border: 1px solid rgba(185,28,28,.25);
+    }
+    .btn-wide{ width:100%; }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:12px;
+    }
+
+    .card{
+      background:#fff;
+      border: 1px solid rgba(17,24,39,.08);
+      border-radius: var(--radius);
+      padding: 12px;
+      box-shadow: 0 10px 24px rgba(16,24,40,.06);
+    }
+
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .muted{
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .title{
+      font-weight: 760;
+      letter-spacing: -.02em;
+      margin: 0 0 4px;
+      font-size: 14.5px;
+    }
+
+    .subtitle{
+      margin:0;
+      color: var(--muted);
+      font-size: 12.8px;
+      line-height:1.35;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 10px;
+    }
+    .chip{
+      font-size: 11.5px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(26,95,76,.22);
+      background: rgba(232,245,240,.7);
+      color: var(--primary);
+      user-select:none;
+    }
+    .chip-gold{
+      border-color: rgba(212,175,55,.35);
+      background: rgba(212,175,55,.12);
+      color: #6a5412;
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      margin-top: 12px;
+      flex-wrap:wrap;
+    }
+    .actions .btn{ flex: 1 1 140px; }
+
+    .input{
+      width:100%;
+      border: 1px solid rgba(17,24,39,.12);
+      border-radius: 14px;
+      padding: 12px 12px;
+      font-size: 13.5px;
+      outline:none;
+      background:#fff;
+      box-shadow: inset 0 1px 0 rgba(0,0,0,.02);
+    }
+    .input:focus{
+      border-color: rgba(26,95,76,.45);
+      box-shadow: 0 0 0 4px rgba(26,95,76,.10);
+    }
+
+    .msg{
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(26,95,76,.08);
+      border: 1px solid rgba(26,95,76,.18);
+      color: var(--primary);
+      font-size: 12.8px;
+      line-height:1.35;
+    }
+    .msg.error{
+      background: rgba(185,28,28,.08);
+      border-color: rgba(185,28,28,.18);
+      color: var(--danger);
+    }
+
+    .divider{
+      height:1px;
+      background: var(--line);
+      margin: 12px 0;
+    }
+
+    .kv{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .kv .k{
+      font-size: 11.5px;
+      letter-spacing:.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin:0 0 4px;
+    }
+    .kv .v{
+      margin:0;
+      font-size: 13.2px;
+      line-height:1.5;
+    }
+
+    .accordion{
+      border: 1px solid rgba(17,24,39,.08);
+      border-radius: var(--radius);
+      overflow:hidden;
+      background:#fff;
+      box-shadow: 0 10px 24px rgba(16,24,40,.05);
+    }
+    .acc-item + .acc-item{ border-top: 1px solid var(--line); }
+    .acc-q{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      padding: 12px;
+      background:#fff;
+      border:none;
+      cursor:pointer;
+      font-weight: 700;
+      font-size: 13px;
+      text-align:left;
+    }
+    .acc-a{
+      padding: 0 12px 12px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.45;
+      display:none;
+    }
+    .acc-item.open .acc-a{ display:block; }
+
+    .progress{
+      height: 10px;
+      background: rgba(17,24,39,.06);
+      border-radius: 999px;
+      overflow:hidden;
+      border: 1px solid rgba(17,24,39,.08);
+    }
+    .bar{
+      height:100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), #0f3c31);
+      border-radius: 999px;
+      transition: width .25s ease;
+    }
+
+    .optgrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top: 12px;
+    }
+    .opt{
+      padding: 12px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(17,24,39,.10);
+      background:#fff;
+      cursor:pointer;
+      font-weight: 650;
+      font-size: 13px;
+      color: #111827;
+      box-shadow: 0 10px 18px rgba(16,24,40,.05);
+      transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+      text-align:center;
+      user-select:none;
+    }
+    .opt:hover{ transform: translateY(-1px); border-color: rgba(26,95,76,.30); box-shadow: 0 14px 22px rgba(16,24,40,.06); }
+    .opt.selected{
+      border-color: rgba(26,95,76,.55);
+      box-shadow: 0 0 0 4px rgba(26,95,76,.10);
+      background: rgba(232,245,240,.65);
+      color: var(--primary);
+    }
+
+    .fade{
+      animation: fadeIn .18s ease both;
+    }
+    @keyframes fadeIn{
+      from{ opacity:0; transform: translateY(6px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+
+    .tiny{
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      font-size: 12px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,55,.35);
+      background: rgba(212,175,55,.10);
+      color: #6a5412;
+    }
+
+    .mono{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 12.2px;
+    }
+
+    @media (min-width: 980px){
+      .stage{
+        grid-template-columns: 1fr 1fr;
+        align-items:start;
+        justify-items:stretch;
+      }
+      .phone-wrap{ justify-self:end; }
+      .side{
+        justify-self:start;
+        max-width: 440px;
+      }
+    }
+
+    .side{
+      display:none;
+    }
+    @media (min-width: 980px){
+      .side{
+        display:block;
+        padding: 14px;
+        border-radius: 28px;
+        background: rgba(255,255,255,.70);
+        border: 1px solid rgba(17,24,39,.08);
+        box-shadow: 0 12px 30px rgba(16,24,40,.06);
+      }
+      .side .h1{ font-size: 18px; }
+    }
+
+    .kbd{
+      display:inline-flex;
+      padding: 4px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(17,24,39,.12);
+      background:#fff;
+      font-size: 12px;
+      color: var(--muted);
+      box-shadow: 0 8px 18px rgba(16,24,40,.05);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stage">
+    <div class="phone-wrap">
+      <div class="phone" role="application" aria-label="Prototipo WAV">
+        <div class="status"></div>
+
+        <header class="header">
+          <div class="header-inner">
+            <div class="hdr-actions">
+              <button class="iconbtn" id="btnBack" aria-label="Atrás" title="Atrás">
+                <svg class="icon" viewBox="0 0 24 24" fill="none">
+                  <path d="M15 18l-6-6 6-6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="brand">
+              <div class="logo" aria-hidden="true"></div>
+              <div class="brand-title">
+                <strong>WAV</strong>
+                <span id="hdrSub">Prototipo navegable</span>
+              </div>
+            </div>
+
+            <div class="hdr-actions">
+              <button class="iconbtn" id="btnFav" aria-label="Favoritos" title="Favoritos">
+                <svg class="icon" id="favIcon" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 21s-7-4.4-9.2-8.5C1.4 9.5 3.2 6.8 6.2 6.2c1.7-.3 3.2.3 4.2 1.3 1-1 2.5-1.6 4.2-1.3 3 .6 4.8 3.3 3.4 6.3C19 16.6 12 21 12 21z"
+                        stroke-width="1.9" stroke-linejoin="round"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <main class="content" id="app"></main>
+
+        <div class="footerbar">
+          <div class="footnote">
+            Prototipo para demo (QR simulado + rutina). <span class="kbd">wav://p/&lt;id&gt;</span>
+          </div>
+          <div class="pill" id="pillState">Listo</div>
+        </div>
+      </div>
+    </div>
+
+    <aside class="side" aria-label="Notas del prototipo">
+      <div class="h1">Qué estás viendo</div>
+      <p class="p">
+        Este archivo simula una app móvil de <b>WAV</b> (cosmética premium con Aloe Vera de Lanzarote) con navegación, QR simulado,
+        ficha de producto, quiz y rutina recomendada. Se abre con doble clic.
+      </p>
+      <div class="card">
+        <div class="title">Atajos útiles</div>
+        <p class="muted" style="margin:0">
+          • Ir a Home: <span class="mono">#home</span><br/>
+          • Escanear: <span class="mono">#scan</span><br/>
+          • Quiz: <span class="mono">#quiz</span><br/>
+          • Favoritos: <span class="mono">#favorites</span>
+        </p>
+      </div>
+      <div class="divider"></div>
+      <div class="card">
+        <div class="title">Cómo “simula el QR”</div>
+        <p class="muted" style="margin:0">
+          Pega un ID tipo <span class="mono">ALOE-GEL-01</span> o un link <span class="mono">wav://p/ALOE-GEL-01</span>.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // -----------------------------
+    // Datos mock (6 productos)
+    // -----------------------------
+    const PRODUCTS = [
+      {
+        id: "ALOE-GEL-01",
+        nombre: "Gel Corporal Aloe Puro 99%",
+        tagline: "Multiuso calmante para cuerpo y cabello.",
+        claims: ["99% aloe", "After-sun", "Sin perfume", "Sensación fresca"],
+        ingredientes: "Aloe barbadensis leaf juice (99%), glicerina vegetal, pantenol, conservantes suaves.",
+        modo_uso: "Aplicar una capa fina sobre piel limpia. Ideal tras el sol o después de la ducha. En cabello, usar en puntas como leave-in.",
+        warnings: "Uso externo. Evitar contacto con ojos. Suspender si aparece irritación.",
+        origen_trazabilidad: "Aloe Vera de Lanzarote, Islas Canarias. Cultivo y extracción de alta calidad.",
+        faq: [
+          { q: "¿Sirve para piel sensible?", a: "Sí, está formulado sin perfume y con enfoque calmante. Aun así, prueba en una zona pequeña." },
+          { q: "¿Puedo usarlo a diario?", a: "Sí. Es apto para uso diario, especialmente en hidratación ligera o después del sol." }
+        ]
+      },
+      {
+        id: "ALOE-CREAM-02",
+        nombre: "Crema Hidratante Día SPF 30",
+        tagline: "Hidratación diaria + protección solar.",
+        claims: ["SPF 30", "Hidratación", "Textura ligera", "Acabado confortable"],
+        ingredientes: "Aloe vera, filtros UV SPF 30, ácido hialurónico, niacinamida, emolientes suaves.",
+        modo_uso: "Aplicar por la mañana como último paso. Reaplicar si hay exposición prolongada al sol.",
+        warnings: "Uso externo. Evitar contacto con ojos. Reaplicar en caso de sudor/agua.",
+        origen_trazabilidad: "Aloe Vera de Lanzarote, Islas Canarias. Cultivo y extracción de alta calidad.",
+        faq: [
+          { q: "¿Es grasa?", a: "No. Está pensada para un acabado ligero, adecuada para uso diario." },
+          { q: "¿Sustituye al protector solar?", a: "Aporta SPF 30. Para exposición intensa, complementa con un fotoprotector dedicado." }
+        ]
+      },
+      {
+        id: "ALOE-MASK-03",
+        nombre: "Mascarilla Reparadora Nocturna",
+        tagline: "Recupera la piel mientras duermes.",
+        claims: ["80% aloe", "Reparación", "Luminosidad", "Sensación nutritiva"],
+        ingredientes: "Aloe vera (80%), bakuchiol, ceramidas, escualano, antioxidantes.",
+        modo_uso: "Aplicar por la noche 2–3 veces por semana (o según necesidad) como último paso. Dejar actuar.",
+        warnings: "Uso externo. Evitar contacto con ojos. Suspender si hay irritación persistente.",
+        origen_trazabilidad: "Aloe Vera de Lanzarote, Islas Canarias. Cultivo y extracción de alta calidad.",
+        faq: [
+          { q: "¿Puedo usarla cada noche?", a: "Puedes en piel seca o muy expuesta; en piel grasa, mejor 2–3 veces por semana." },
+          { q: "¿Es compatible con sérum?", a: "Sí. Aplica el sérum primero y la mascarilla al final." }
+        ]
+      },
+      {
+        id: "ALOE-SERUM-04",
+        nombre: "Sérum Facial Intensivo",
+        tagline: "Hidratación profunda con acabado ligero.",
+        claims: ["75% aloe", "Ácido hialurónico", "Anti-edad", "Piel elástica"],
+        ingredientes: "Aloe vera (75%), ácido hialurónico, péptidos, antioxidantes, humectantes.",
+        modo_uso: "Aplicar 2–3 gotas mañana y/o noche antes de la crema. Masajear suavemente.",
+        warnings: "Uso externo. Evitar contacto con ojos. No aplicar sobre piel irritada.",
+        origen_trazabilidad: "Aloe Vera de Lanzarote, Islas Canarias. Cultivo y extracción de alta calidad.",
+        faq: [
+          { q: "¿Se puede usar en piel mixta/grasa?", a: "Sí. Tiene textura ligera y se absorbe rápido." },
+          { q: "¿Cuándo se notan resultados?", a: "La hidratación es inmediata; la mejora de textura suele apreciarse en 2–4 semanas." }
+        ]
+      },
+      {
+        id: "ALOE-SCRUB-05",
+        nombre: "Exfoliante Corporal Sal Marina",
+        tagline: "Piel suave con minerales del Atlántico.",
+        claims: ["Sal marina", "Suaviza", "Aloe 50%", "Sensación spa"],
+        ingredientes: "Aloe vera (50%), sal marina, aceites vegetales, vitamina E.",
+        modo_uso: "Usar 1–2 veces por semana en ducha. Masajear en círculos y aclarar.",
+        warnings: "No usar sobre piel irritada o recién depilada. Evitar contacto con ojos.",
+        origen_trazabilidad: "Aloe Vera de Lanzarote, Islas Canarias. Cultivo y extracción de alta calidad.",
+        faq: [
+          { q: "¿Es apto para piel sensible?", a: "En piel sensible, úsalo con suavidad y reduce frecuencia." },
+          { q: "¿Deja residuo graso?", a: "Deja una sensación nutritiva ligera. Aclara bien si prefieres acabado seco." }
+        ]
+      },
+      {
+        id: "ALOE-EYES-06",
+        nombre: "Contorno de Ojos Antiojeras",
+        tagline: "Mirada descansada con efecto fresco.",
+        claims: ["70% aloe", "Cafeína", "Sin perfume", "Textura ligera"],
+        ingredientes: "Aloe vera (70%), cafeína, ácido hialurónico, extractos calmantes.",
+        modo_uso: "Aplicar una pequeña cantidad mañana y noche. Dar toques suaves sin arrastrar.",
+        warnings: "Uso externo. Evitar contacto directo con ojos. Suspender si hay irritación.",
+        origen_trazabilidad: "Aloe Vera de Lanzarote, Islas Canarias. Cultivo y extracción de alta calidad.",
+        faq: [
+          { q: "¿Sirve para bolsas?", a: "Ayuda a mejorar el aspecto gracias a la cafeína y al efecto fresco." },
+          { q: "¿Puedo maquillarme encima?", a: "Sí. Espera 1–2 minutos a que se absorba." }
+        ]
+      },
+    ];
+
+    // -----------------------------
+    // Estado + utilidades
+    // -----------------------------
+    const appEl = document.getElementById("app");
+    const btnBack = document.getElementById("btnBack");
+    const btnFav = document.getElementById("btnFav");
+    const hdrSub = document.getElementById("hdrSub");
+    const pillState = document.getElementById("pillState");
+    const favIcon = document.getElementById("favIcon");
+
+    const STORAGE_KEY = "wav_proto_state_v1";
+
+    const defaultState = {
+      favorites: [],
+      routineSaved: null,
+      quiz: {
+        step: 0,
+        answers: {
+          piel: null,
+          objetivo: null,
+          sol: null,
+          textura: null,
+          perfume: null,
+          momento: null,
+        }
+      }
+    };
+
+    let state = loadState();
+    let routeStack = [];
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return structuredClone(defaultState);
+        const parsed = JSON.parse(raw);
+        return {
+          ...structuredClone(defaultState),
+          ...parsed,
+          quiz: {
+            ...structuredClone(defaultState.quiz),
+            ...(parsed.quiz || {}),
+            answers: {
+              ...structuredClone(defaultState.quiz.answers),
+              ...((parsed.quiz && parsed.quiz.answers) || {})
+            }
+          }
+        };
+      }catch(e){
+        return structuredClone(defaultState);
+      }
+    }
+
+    function saveState(){
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateFavIcon();
+    }
+
+    function setPill(text){ pillState.textContent = text; }
+
+    function byId(id){ return PRODUCTS.find(p => p.id === id); }
+
+    function isFav(id){ return state.favorites.includes(id); }
+
+    function toggleFav(id){
+      if(isFav(id)){
+        state.favorites = state.favorites.filter(x => x !== id);
+        setPill("Quitado de favoritos");
+      }else{
+        state.favorites = [...state.favorites, id];
+        setPill("Añadido a favoritos");
+      }
+      saveState();
+      renderCurrent();
+    }
+
+    function updateFavIcon(){
+      const hasFav = (state.favorites || []).length > 0;
+      favIcon.style.fill = hasFav ? "rgba(26,95,76,.18)" : "none";
+      favIcon.style.stroke = hasFav ? "var(--primary)" : "currentColor";
+    }
+
+    function escapeHtml(s){
+      return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+    }
+
+    function navigate(hash){
+      if(!hash.startsWith("#")) hash = "#" + hash;
+      if(location.hash === hash) return;
+      location.hash = hash;
+    }
+
+    function pushRoute(r){
+      if(routeStack.length === 0 || routeStack[routeStack.length-1] !== r){
+        routeStack.push(r);
+      }
+      // Limitar tamaño por higiene
+      if(routeStack.length > 50) routeStack.shift();
+    }
+
+    function back(){
+      // Si hay historial de navegador, úsalo; si no, ir a home
+      if(routeStack.length > 1){
+        // Eliminamos la actual
+        routeStack.pop();
+        const prev = routeStack.pop(); // se reinsertará en hashchange
+        navigate(prev.replace(/^#/, ""));
+      } else {
+        navigate("home");
+      }
+    }
+
+    // -----------------------------
+    // Router
+    // -----------------------------
+    function getRoute(){
+      const h = location.hash || "#home";
+      const parts = h.slice(1).split("/");
+      return { raw: h, parts };
+    }
+
+    window.addEventListener("hashchange", () => {
+      const r = location.hash || "#home";
+      pushRoute(r);
+      renderCurrent(true);
+    });
+
+    // -----------------------------
+    // Pantallas
+    // -----------------------------
+    function screenShell(title, subtitle, bodyHtml){
+      hdrSub.textContent = subtitle || "Prototipo navegable";
+      return `
+        <div class="fade">
+          <div class="h1">${escapeHtml(title)}</div>
+          ${bodyHtml}
+        </div>
+      `;
+    }
+
+    function productCard(p){
+      const fav = isFav(p.id);
+      return `
+        <div class="card">
+          <div class="row">
+            <div style="min-width:0">
+              <div class="title">${escapeHtml(p.nombre)}</div>
+              <div class="subtitle">${escapeHtml(p.tagline)}</div>
+            </div>
+            <span class="tag">${fav ? "❤️ Guardado" : "🌿 Aloe"}</span>
+          </div>
+          <div class="chips">
+            ${p.claims.slice(0,3).map(c => `<span class="chip">${escapeHtml(c)}</span>`).join("")}
+          </div>
+          <div class="actions">
+            <button class="btn btn-ghost" data-action="openProduct" data-id="${p.id}">Ver ficha</button>
+            <button class="btn ${fav ? "btn-danger" : "btn-soft"}" data-action="toggleFav" data-id="${p.id}">
+              ${fav ? "Quitar ❤️" : "Añadir ❤️"}
+            </button>
+          </div>
+          <div class="tiny" style="margin-top:10px;color:var(--muted)">
+            ID: <span class="mono">${p.id}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function homeScreen(){
+      const hero = `
+        <div class="hero">
+          <div class="pill" style="margin-bottom:10px">
+            <span style="color:var(--accent)">●</span> Prototipo para demo (WAV)
+          </div>
+          <div class="h1">WAV — Aloe Vera premium de Lanzarote</div>
+          <p class="p">
+            Escanea un QR del packaging (simulado), revisa la ficha del producto y obtén una rutina personalizada.
+          </p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" data-action="go" data-to="scan">Escanear QR</button>
+            <button class="btn btn-ghost" data-action="go" data-to="quiz">Hacer mi rutina</button>
+            <button class="btn btn-soft" data-action="go" data-to="products">Ver productos</button>
+          </div>
+        </div>
+      `;
+
+      const list = PRODUCTS.map(productCard).join("");
+
+      const extra = `
+        <div class="h2">Accesos rápidos</div>
+        <div class="grid">
+          <div class="card">
+            <div class="row">
+              <div>
+                <div class="title">Experiencia en finca (demo)</div>
+                <div class="subtitle">Turismo + formación + experiencia inmersiva (mock).</div>
+              </div>
+              <button class="btn btn-soft" data-action="go" data-to="finca">Ver</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="h2">Productos</div>
+        <div class="grid">${list}</div>
+      `;
+
+      return screenShell("Inicio", "WAV — Demo", hero + extra);
+    }
+
+    function productsScreen(){
+      return screenShell(
+        "Productos",
+        "Catálogo (mock)",
+        `
+          <p class="p">Selecciona un producto para ver su ficha. Puedes guardar favoritos con ❤️.</p>
+          <div class="grid">
+            ${PRODUCTS.map(productCard).join("")}
+          </div>
+        `
+      );
+    }
+
+    function parseProductId(input){
+      if(!input) return null;
+      let s = input.trim();
+      if(!s) return null;
+
+      // Si es exactamente el ID
+      if(byId(s)) return s;
+
+      // Extraer tras /p/
+      const idx = s.indexOf("/p/");
+      if(idx !== -1){
+        const tail = s.slice(idx + 3);
+        const id = tail.split(/[?#/]/)[0].trim();
+        if(byId(id)) return id;
+      }
+
+      // Extraer tras wav://p/
+      const idx2 = s.indexOf("wav://p/");
+      if(idx2 !== -1){
+        const tail = s.slice(idx2 + "wav://p/".length);
+        const id = tail.split(/[?#/]/)[0].trim();
+        if(byId(id)) return id;
+      }
+
+      // Limpiar posibles prefijos raros
+      s = s.replace(/^.*(ALOE-[A-Z]+-\d{2}).*$/i, "$1").toUpperCase();
+      if(byId(s)) return s;
+
+      return null;
+    }
+
+    function scanScreen(){
+      const demoBtns = PRODUCTS.map(p => `
+        <button class="btn btn-soft" style="flex:1 1 140px" data-action="demoScan" data-id="${p.id}">
+          ${escapeHtml(p.nombre.split(" ").slice(0,2).join(" "))}<br><span class="tiny">${p.id}</span>
+        </button>
+      `).join("");
+
+      return screenShell(
+        "Escanear QR (simulado)",
+        "QR → contenido de producto",
+        `
+          <p class="p">
+            Pega un ID o un enlace tipo <span class="mono">wav://p/ALOE-GEL-01</span> y abre la ficha del producto.
+          </p>
+
+          <div class="card">
+            <div class="title">Pegar QR / enlace</div>
+            <input class="input" id="qrInput" placeholder="Ej: ALOE-GEL-01 o wav://p/ALOE-GEL-01" />
+            <div class="actions">
+              <button class="btn btn-primary btn-wide" data-action="openFromQR">Abrir</button>
+            </div>
+            <div id="qrMsg" style="margin-top:10px"></div>
+          </div>
+
+          <div class="h2">Demo: simular escaneo</div>
+          <div class="card">
+            <div class="muted">Toca un botón para abrir directamente la ficha.</div>
+            <div class="actions" style="margin-top:12px">${demoBtns}</div>
+          </div>
+        `
+      );
+    }
+
+    function productDetailScreen(productId){
+      const p = byId(productId);
+      if(!p){
+        return screenShell(
+          "Producto no encontrado",
+          "Error",
+          `<div class="msg error">No hemos encontrado ese producto. Revisa el ID o prueba con un ejemplo.</div>
+           <div class="actions">
+             <button class="btn btn-primary" data-action="go" data-to="scan">Volver a escanear</button>
+             <button class="btn btn-ghost" data-action="go" data-to="products">Ver productos</button>
+           </div>`
+        );
+      }
+
+      const fav = isFav(p.id);
+
+      const faqHtml = `
+        <div class="accordion" role="region" aria-label="Preguntas frecuentes">
+          ${p.faq.map((item, i) => `
+            <div class="acc-item" data-acc="${i}">
+              <button class="acc-q" data-action="toggleAcc" data-acc="${i}">
+                <span>${escapeHtml(item.q)}</span>
+                <span class="tiny">+</span>
+              </button>
+              <div class="acc-a">${escapeHtml(item.a)}</div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+
+      return screenShell(
+        p.nombre,
+        "Ficha de producto",
+        `
+          <div class="card">
+            <div class="row">
+              <div style="min-width:0">
+                <div class="title">${escapeHtml(p.tagline)}</div>
+                <div class="muted">ID: <span class="mono">${p.id}</span></div>
+              </div>
+              <span class="tag">🌿 Lanzarote</span>
+            </div>
+
+            <div class="chips">
+              ${p.claims.map((c,i) => `<span class="chip ${i===0 ? "chip-gold":""}">${escapeHtml(c)}</span>`).join("")}
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="kv">
+              <div>
+                <p class="k">Ingredientes</p>
+                <p class="v">${escapeHtml(p.ingredientes)}</p>
+              </div>
+              <div>
+                <p class="k">Modo de uso</p>
+                <p class="v">${escapeHtml(p.modo_uso)}</p>
+              </div>
+              <div>
+                <p class="k">Advertencias</p>
+                <p class="v">${escapeHtml(p.warnings)}</p>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="card" style="padding:12px;background:rgba(232,245,240,.55);border-color:rgba(26,95,76,.18);box-shadow:none">
+              <div class="title">Origen y trazabilidad</div>
+              <div class="muted">${escapeHtml(p.origen_trazabilidad)}</div>
+            </div>
+
+            <div class="actions">
+              <button class="btn ${fav ? "btn-danger" : "btn-soft"}" data-action="toggleFav" data-id="${p.id}">
+                ${fav ? "Quitar de favoritos" : "Añadir a favoritos"}
+              </button>
+              <button class="btn btn-primary" data-action="addToRoutine" data-id="${p.id}">Añadir a mi rutina</button>
+            </div>
+          </div>
+
+          <div class="h2">Preguntas frecuentes</div>
+          ${faqHtml}
+
+          <div class="h2">Siguiente paso</div>
+          <div class="card">
+            <div class="title">Rutina personalizada</div>
+            <div class="subtitle">Responde 6 preguntas y te recomendamos 2–3 productos.</div>
+            <div class="actions">
+              <button class="btn btn-primary" data-action="go" data-to="quiz">Hacer quiz</button>
+              <button class="btn btn-ghost" data-action="go" data-to="products">Ver catálogo</button>
+            </div>
+          </div>
+        `
+      );
+    }
+
+    const QUIZ = [
+      { key:"piel", label:"Tipo de piel", options:["seca","mixta","grasa","sensible"] },
+      { key:"objetivo", label:"Objetivo principal", options:["hidratación","calmante","after-sun","anti-edad"] },
+      { key:"sol", label:"Exposición solar", options:["baja","media","alta"] },
+      { key:"textura", label:"Textura preferida", options:["gel","crema","ligera"] },
+      { key:"perfume", label:"Sensibilidad a perfume", options:["sí","no"] },
+      { key:"momento", label:"Momento de uso", options:["mañana","noche","ambos"] },
+    ];
+
+    function quizScreen(){
+      const step = state.quiz.step || 0;
+      const q = QUIZ[Math.min(step, QUIZ.length-1)];
+      const answered = state.quiz.answers[q.key];
+      const pct = Math.round(((step) / QUIZ.length) * 100);
+
+      const optHtml = q.options.map(opt => `
+        <button class="opt ${answered===opt ? "selected":""}" data-action="pickOpt" data-key="${q.key}" data-val="${opt}">
+          ${opt.toUpperCase().replace("-", "-")}
+        </button>
+      `).join("");
+
+      const nextDisabled = !answered ? "disabled" : "";
+      const nextStyle = !answered ? "opacity:.55;cursor:not-allowed" : "";
+
+      return screenShell(
+        "Tu rutina",
+        `Quiz ${Math.min(step+1, QUIZ.length)}/${QUIZ.length}`,
+        `
+          <p class="p">Responde 6 preguntas y te recomendamos una rutina simple y creíble.</p>
+
+          <div class="card">
+            <div class="row" style="align-items:flex-end">
+              <div>
+                <div class="title">${escapeHtml(q.label)}</div>
+                <div class="muted">Elige una opción para continuar</div>
+              </div>
+              <div class="pill">${Math.min(step+1, QUIZ.length)}/${QUIZ.length}</div>
+            </div>
+
+            <div class="progress" style="margin-top:12px">
+              <div class="bar" style="width:${pct}%"></div>
+            </div>
+
+            <div class="optgrid" style="margin-top:12px">
+              ${optHtml}
+            </div>
+
+            <div class="actions" style="margin-top:14px">
+              <button class="btn btn-ghost" data-action="quizBack" ${step===0 ? 'style="opacity:.6;cursor:not-allowed" disabled' : ""}>Atrás</button>
+              <button class="btn btn-primary" data-action="quizNext" ${nextDisabled} style="${nextStyle}">Siguiente</button>
+            </div>
+
+            <div class="tiny" style="margin-top:10px">
+              Consejo: si tu piel es sensible o “sí” a perfume, priorizamos fórmulas sin perfume.
+            </div>
+          </div>
+        `
+      );
+    }
+
+    function computeRecommendation(answers){
+      const picks = new Set();
+
+      // Reglas base
+      if(answers.objetivo === "after-sun" || answers.sol === "alta") picks.add("ALOE-GEL-01");
+      if(answers.piel === "seca") picks.add("ALOE-CREAM-02");
+      if(answers.objetivo === "anti-edad") picks.add("ALOE-SERUM-04");
+      if(answers.objetivo === "anti-edad" && (answers.momento === "noche" || answers.momento === "ambos")) picks.add("ALOE-MASK-03");
+      if(answers.objetivo === "calmante" && answers.piel === "sensible") picks.add("ALOE-GEL-01");
+
+      // Textura
+      if(answers.textura === "gel") picks.add("ALOE-GEL-01");
+      if(answers.textura === "crema") picks.add("ALOE-CREAM-02");
+      if(answers.textura === "ligera") picks.add("ALOE-SERUM-04");
+
+      // Sensibilidad a perfume
+      const perfumeSensitive = (answers.perfume === "sí") || (answers.piel === "sensible");
+      if(perfumeSensitive) picks.add("ALOE-EYES-06"); // sin perfume
+
+      // Rutina semanal: exfoliante si no es piel sensible y busca “sensación spa”
+      if(!perfumeSensitive && (answers.objetivo === "hidratación" || answers.objetivo === "anti-edad")) picks.add("ALOE-SCRUB-05");
+
+      // Limitar a 3 picks (prioridad por impacto demo)
+      const priority = [
+        "ALOE-GEL-01",
+        "ALOE-CREAM-02",
+        "ALOE-SERUM-04",
+        "ALOE-MASK-03",
+        "ALOE-EYES-06",
+        "ALOE-SCRUB-05"
+      ];
+      let ordered = priority.filter(id => picks.has(id)).slice(0,3);
+
+      // Garantizar mínimo 2
+      if(ordered.length < 2){
+        for(const id of priority){
+          if(!ordered.includes(id)){
+            ordered.push(id);
+            if(ordered.length >= 2) break;
+          }
+        }
+      }
+
+      // Texto adaptativo (cambia según 1–2 variables)
+      let headline = "Rutina equilibrada para piel confortable";
+      if(answers.objetivo === "after-sun" || answers.sol === "alta") headline = "Rutina calmante post-sol (enfoque after-sun)";
+      else if(answers.objetivo === "anti-edad") headline = "Rutina de cuidado anti-edad (textura ligera + reparación)";
+      else if(answers.piel === "seca") headline = "Rutina de hidratación intensiva (barrera y confort)";
+      else if(answers.piel === "grasa") headline = "Rutina ligera para equilibrar sin sensación pesada";
+      else if(answers.piel === "sensible") headline = "Rutina suave para piel sensible (prioriza sin perfume)";
+
+      const note = perfumeSensitive
+        ? "Nota: priorizamos fórmulas sin perfume y una aplicación suave (sin fricción)."
+        : "Nota: mantén consistencia 2–4 semanas para notar mejora de textura y confort.";
+
+      const blocks = buildRoutineBlocks(answers, ordered);
+
+      return { ordered, headline, note, blocks };
+    }
+
+    function buildRoutineBlocks(answers, ordered){
+      // Construimos bloques Mañana/Noche/Semanal (mock creíble)
+      const morning = [];
+      const night = [];
+      const weekly = [];
+
+      const hasCream = ordered.includes("ALOE-CREAM-02");
+      const hasSerum = ordered.includes("ALOE-SERUM-04");
+      const hasMask = ordered.includes("ALOE-MASK-03");
+      const hasGel = ordered.includes("ALOE-GEL-01");
+      const hasEyes = ordered.includes("ALOE-EYES-06");
+      const hasScrub = ordered.includes("ALOE-SCRUB-05");
+
+      // Mañana
+      morning.push("Limpieza suave (paso sugerido)");
+      if(hasSerum && (answers.momento === "mañana" || answers.momento === "ambos")) morning.push("Sérum (2–3 gotas)");
+      if(hasEyes) morning.push("Contorno de ojos (toques suaves)");
+      if(hasCream) morning.push("Crema Día SPF 30 (último paso)");
+      else morning.push("Protección solar (paso sugerido)");
+
+      // Noche
+      night.push("Limpieza suave (paso sugerido)");
+      if(hasSerum && (answers.momento === "noche" || answers.momento === "ambos")) night.push("Sérum (2–3 gotas)");
+      if(hasEyes) night.push("Contorno de ojos");
+      if(hasMask && (answers.momento === "noche" || answers.momento === "ambos")) night.push("Mascarilla nocturna (2–3 noches/sem)");
+      if(hasGel && answers.objetivo === "after-sun") night.push("Gel Aloe 99% en zonas expuestas");
+
+      // Semanal
+      if(hasScrub) weekly.push("Exfoliante corporal (1–2 veces/sem)");
+      if(hasMask && !weekly.includes("Mascarilla nocturna (2–3 noches/sem)")) weekly.push("Mascarilla nocturna (2–3 noches/sem)");
+      if(hasGel && answers.objetivo !== "after-sun") weekly.push("Gel Aloe 99% como refuerzo calmante cuando lo necesites");
+
+      // Ajuste mínimo
+      if(weekly.length === 0) weekly.push("Refuerzo: Gel Aloe 99% cuando notes tirantez o tras el sol");
+
+      return { morning, night, weekly };
+    }
+
+    function resultScreen(){
+      const rec = computeRecommendation(state.quiz.answers);
+      const cards = rec.ordered.map(id => {
+        const p = byId(id);
+        if(!p) return "";
+        const fav = isFav(p.id);
+        return `
+          <div class="card">
+            <div class="row">
+              <div style="min-width:0">
+                <div class="title">${escapeHtml(p.nombre)}</div>
+                <div class="subtitle">${escapeHtml(p.tagline)}</div>
+              </div>
+              <button class="btn ${fav ? "btn-danger" : "btn-soft"}" data-action="toggleFav" data-id="${p.id}">
+                ${fav ? "Quitar ❤️" : "❤️"}
+              </button>
+            </div>
+            <div class="chips">
+              ${p.claims.slice(0,4).map(c => `<span class="chip">${escapeHtml(c)}</span>`).join("")}
+            </div>
+            <div class="actions">
+              <button class="btn btn-ghost" data-action="openProduct" data-id="${p.id}">Ver ficha</button>
+              <button class="btn btn-primary" data-action="addToRoutine" data-id="${p.id}">Añadir</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      const block = (title, items) => `
+        <div class="card">
+          <div class="row">
+            <div class="title">${escapeHtml(title)}</div>
+            <span class="pill">Checklist</span>
+          </div>
+          <div class="divider"></div>
+          <div class="kv">
+            ${items.map(x => `
+              <div style="display:flex;gap:10px;align-items:flex-start">
+                <span class="chip chip-gold" style="margin-top:2px">✓</span>
+                <div class="v" style="margin:0">${escapeHtml(x)}</div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+
+      const savedMsg = state.routineSaved
+        ? `<div class="msg" style="margin-top:12px">Rutina guardada ✅ (${escapeHtml(state.routineSaved.when)})</div>`
+        : "";
+
+      return screenShell(
+        "Resultado",
+        "Tu rutina recomendada",
+        `
+          <div class="card">
+            <div class="row">
+              <div>
+                <div class="title">${escapeHtml(rec.headline)}</div>
+                <div class="subtitle">${escapeHtml(rec.note)}</div>
+              </div>
+              <span class="tag">✨ Personalizada</span>
+            </div>
+            ${savedMsg}
+          </div>
+
+          <div class="h2">Rutina</div>
+          <div class="grid">
+            ${block("Mañana", rec.blocks.morning)}
+            ${block("Noche", rec.blocks.night)}
+            ${block("Semanal", rec.blocks.weekly)}
+          </div>
+
+          <div class="h2">Productos sugeridos</div>
+          <div class="grid">${cards}</div>
+
+          <div class="h2">Acciones</div>
+          <div class="card">
+            <div class="actions">
+              <button class="btn btn-primary" data-action="saveRoutine">Guardar rutina</button>
+              <button class="btn btn-ghost" data-action="go" data-to="products">Ver productos</button>
+              <button class="btn btn-soft" data-action="go" data-to="home">Volver a inicio</button>
+            </div>
+          </div>
+        `
+      );
+    }
+
+    function favoritesScreen(){
+      const favs = (state.favorites || []).map(byId).filter(Boolean);
+      const empty = `
+        <div class="msg">Aún no has guardado favoritos. Entra a un producto y pulsa ❤️.</div>
+        <div class="actions">
+          <button class="btn btn-primary" data-action="go" data-to="products">Ver productos</button>
+          <button class="btn btn-ghost" data-action="go" data-to="home">Inicio</button>
+        </div>
+      `;
+      const list = favs.map(productCard).join("");
+      return screenShell(
+        "Favoritos",
+        "Tus productos guardados",
+        `
+          <p class="p">Aquí guardas productos para revisarlos luego o construir tu rutina.</p>
+          ${favs.length ? `<div class="grid">${list}</div>` : empty}
+        `
+      );
+    }
+
+    function fincaScreen(){
+      return screenShell(
+        "Experiencia en finca",
+        "Turismo + formación + venta (demo)",
+        `
+          <div class="card">
+            <div class="row">
+              <div>
+                <div class="title">Visita la finca en Lanzarote</div>
+                <div class="subtitle">Un espacio sensorial con tecnologías inmersivas (mock).</div>
+              </div>
+              <span class="tag">🏝️ Lanzarote</span>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="kv">
+              <div>
+                <p class="k">Qué incluye</p>
+                <p class="v">Recorrido por cultivo de aloe, demostración de extracción, estación inmersiva y zona de compra.</p>
+              </div>
+              <div>
+                <p class="k">Objetivo</p>
+                <p class="v">Conectar el producto con su origen: confianza, trazabilidad y experiencia premium.</p>
+              </div>
+            </div>
+
+            <div class="actions" style="margin-top:14px">
+              <button class="btn btn-primary" data-action="mockReserve">Reservar visita</button>
+              <button class="btn btn-ghost" data-action="mockImmersive">Experiencia inmersiva (demo)</button>
+            </div>
+
+            <div id="fincaMsg" style="margin-top:12px"></div>
+          </div>
+
+          <div class="h2">Idea de integración con QR</div>
+          <div class="card">
+            <div class="muted">
+              Tras escanear el packaging, la app puede ofrecer: contenido del lote, historia del cultivo, y un CTA para visitar la finca.
+            </div>
+            <div class="actions" style="margin-top:12px">
+              <button class="btn btn-soft" data-action="go" data-to="scan">Ir a escanear</button>
+              <button class="btn btn-ghost" data-action="go" data-to="home">Inicio</button>
+            </div>
+          </div>
+        `
+      );
+    }
+
+    // -----------------------------
+    // Render + eventos
+    // -----------------------------
+    function renderCurrent(fromHashChange=false){
+      const { raw, parts } = getRoute();
+      const base = parts[0] || "home";
+      setPill("Listo");
+
+      // control back button
+      btnBack.disabled = routeStack.length <= 1;
+      btnBack.style.opacity = btnBack.disabled ? ".55" : "1";
+      btnBack.style.cursor = btnBack.disabled ? "not-allowed" : "pointer";
+
+      let html = "";
+
+      if(base === "home") html = homeScreen();
+      else if(base === "scan") html = scanScreen();
+      else if(base === "products") html = productsScreen();
+      else if(base === "product") html = productDetailScreen(parts[1]);
+      else if(base === "quiz") html = quizScreen();
+      else if(base === "result") html = resultScreen();
+      else if(base === "favorites") html = favoritesScreen();
+      else if(base === "finca") html = fincaScreen();
+      else html = homeScreen();
+
+      appEl.innerHTML = html;
+      bindScreenHandlers();
+      updateFavIcon();
+    }
+
+    function bindScreenHandlers(){
+      // Delegación de eventos
+      appEl.onclick = (e) => {
+        const t = e.target.closest("[data-action]");
+        if(!t) return;
+
+        const action = t.getAttribute("data-action");
+
+        if(action === "go"){
+          navigate(t.getAttribute("data-to"));
+          return;
+        }
+
+        if(action === "openProduct"){
+          const id = t.getAttribute("data-id");
+          navigate(`product/${id}`);
+          return;
+        }
+
+        if(action === "toggleFav"){
+          const id = t.getAttribute("data-id");
+          toggleFav(id);
+          return;
+        }
+
+        if(action === "openFromQR"){
+          const input = document.getElementById("qrInput");
+          const msg = document.getElementById("qrMsg");
+          const id = parseProductId(input ? input.value : "");
+          if(!id){
+            if(msg) msg.innerHTML = `<div class="msg error">Producto no encontrado. Prueba con <span class="mono">ALOE-GEL-01</span>.</div>`;
+            setPill("Error");
+            return;
+          }
+          if(msg) msg.innerHTML = `<div class="msg">Abriendo <span class="mono">${id}</span>…</div>`;
+          navigate(`product/${id}`);
+          return;
+        }
+
+        if(action === "demoScan"){
+          const id = t.getAttribute("data-id");
+          navigate(`product/${id}`);
+          return;
+        }
+
+        if(action === "toggleAcc"){
+          const idx = t.getAttribute("data-acc");
+          const item = appEl.querySelector(`.acc-item[data-acc="${idx}"]`);
+          if(item){
+            item.classList.toggle("open");
+            const plus = item.querySelector(".acc-q .tiny");
+            if(plus) plus.textContent = item.classList.contains("open") ? "–" : "+";
+          }
+          return;
+        }
+
+        if(action === "addToRoutine"){
+          // En este prototipo, añadir a rutina te sugiere hacer el quiz si no lo has hecho
+          setPill("Añadido (demo)");
+          if(!state.quiz.answers.objetivo || !state.quiz.answers.piel){
+            navigate("quiz");
+          }else{
+            navigate("result");
+          }
+          return;
+        }
+
+        if(action === "pickOpt"){
+          const key = t.getAttribute("data-key");
+          const val = t.getAttribute("data-val");
+          state.quiz.answers[key] = val;
+          saveState();
+          renderCurrent();
+          return;
+        }
+
+        if(action === "quizNext"){
+          const step = state.quiz.step || 0;
+          const q = QUIZ[Math.min(step, QUIZ.length-1)];
+          if(!state.quiz.answers[q.key]) return;
+          if(step < QUIZ.length - 1){
+            state.quiz.step = step + 1;
+            saveState();
+            renderCurrent();
+          } else {
+            // fin quiz
+            state.quiz.step = QUIZ.length - 1;
+            saveState();
+            navigate("result");
+          }
+          return;
+        }
+
+        if(action === "quizBack"){
+          const step = state.quiz.step || 0;
+          if(step <= 0) return;
+          state.quiz.step = step - 1;
+          saveState();
+          renderCurrent();
+          return;
+        }
+
+        if(action === "saveRoutine"){
+          const now = new Date();
+          state.routineSaved = { when: now.toLocaleString("es-ES") };
+          saveState();
+          setPill("Rutina guardada");
+          renderCurrent();
+          return;
+        }
+
+        if(action === "mockReserve"){
+          const msg = document.getElementById("fincaMsg");
+          if(msg) msg.innerHTML = `<div class="msg">Reserva (demo): se abriría un formulario con fecha, horarios y pago.</div>`;
+          setPill("Demo");
+          return;
+        }
+
+        if(action === "mockImmersive"){
+          const msg = document.getElementById("fincaMsg");
+          if(msg) msg.innerHTML = `<div class="msg">Inmersivo (demo): contenido 360º / AR / recorrido guiado por la finca.</div>`;
+          setPill("Demo");
+          return;
+        }
+      };
+
+      // Enter en input QR
+      const qr = document.getElementById("qrInput");
+      if(qr){
+        qr.addEventListener("keydown", (ev) => {
+          if(ev.key === "Enter"){
+            const btn = appEl.querySelector('[data-action="openFromQR"]');
+            if(btn) btn.click();
+          }
+        });
+      }
+    }
+
+    // Header handlers
+    btnBack.addEventListener("click", () => {
+      if(btnBack.disabled) return;
+      back();
+    });
+
+    btnFav.addEventListener("click", () => navigate("favorites"));
+
+    // Init
+    (function init(){
+      // inicializar stack con la ruta actual
+      const initial = location.hash || "#home";
+      pushRoute(initial);
+      updateFavIcon();
+      renderCurrent();
+      if(!location.hash) location.hash = "#home";
+    })();
+  </script>
+</body>
+</html>
